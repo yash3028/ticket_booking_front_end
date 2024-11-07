@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom"
+
 function AgentLogin(){
     return (
         <div className="login-page">
@@ -10,7 +12,10 @@ function AgentLogin(){
                 Password:
                 <input type="password" id="password" name="password" required />
             </label>
-            <button type="submit">Login</button>
+            <button type="submit" className="submit">Login</button>
+            <button className="agent-sign" type="submit">
+                <Link to="/agentsign">Sign Up</Link>
+            </button>
         </form>
     </div>
     )

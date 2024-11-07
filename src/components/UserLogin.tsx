@@ -1,5 +1,8 @@
-import { Link } from "react-router-dom"
+import { Link} from "react-router-dom"
+import '../styles/userlogin.css'
+import '../services/Request'
 function UserLogin(){
+
     return (
         <div className="login-page">
             <h2>User Login</h2>
@@ -11,9 +14,14 @@ function UserLogin(){
                     Password:
                     <input type="password" id="password" name="password" required />
                 </label>
+                <div className="btns">
                 <button className='sign-in'>
-                <Link to="/usersign">Login</Link>
+                <Link to="/usersign">Sign In</Link>
               </button>
+              <button className='sign-in'>
+                <Link to="/user-login">Login</Link>
+              </button>
+              </div>
             </form>
         </div>
     )

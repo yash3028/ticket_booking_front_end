@@ -6,6 +6,7 @@ import AgentLogin from "./components/AgentLogin";
 import LoginOptions from "./components/LoginOptions";
 import UserLogin from "./components/UserLogin";
 import UserSign from "./components/UserSign";
+import AgentSign from "./components/AgentSign";
 function App() {
   return (
     <>
@@ -17,6 +18,7 @@ function App() {
           <Route path="/user-login" element={<UserLogin />} />
           <Route path="/usersign" element={<UserSign />} />
           <Route path="/agent-login" element={<AgentLogin />} />
+          <Route path="/agentsign" element={<AgentSign />} />
         </Routes>
       </BrowserRouter>
     </>
