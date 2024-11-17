@@ -1,6 +1,7 @@
 import React from 'react';
 import {User} from '../models/User.model'
 import {post_request} from '../services/Request'
+import '../styles/usersign.css'
 
 function UserSign() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -16,7 +17,7 @@ function UserSign() {
             full_name: fullName.value,
             email: email.value,
             mobile: mobileNo.value,
-            user_role: 'agent',
+            user_role: 'user',
             company_name: null,
             date_of_birth: new Date(dob.value) ,
             password: password.value,
@@ -31,7 +32,7 @@ function UserSign() {
         <div className="user-sign">
             <h2>User Sign In</h2>
             <form onSubmit={handleSubmit}>
-                <label>Full Name
+                <label>Full Name:
                     <input
                         type="text"
                         className="input-field"
@@ -39,7 +40,7 @@ function UserSign() {
                         required
                     />
                 </label>
-                <label>Mobile No
+                <label>Mobile No:
                     <input
                         type="text"
                         className="input-field"
@@ -47,7 +48,7 @@ function UserSign() {
                         required
                     />
                 </label>
-                <label>Email
+                <label>Email:
                     <input
                         type="text"
                         className="input-field"
@@ -55,7 +56,7 @@ function UserSign() {
                         required
                     />
                 </label>
-                <label>Date of Birth
+                <label>Date of Birth:
                     <input
                         type="date"
                         className="input-field"
@@ -63,7 +64,7 @@ function UserSign() {
                         required
                     />
                 </label>
-                <label>Password
+                <label>Password:
                     <input
                         type="password"
                         className="input-field"

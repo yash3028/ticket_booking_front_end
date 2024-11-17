@@ -5,7 +5,9 @@ function navbar(){
         <div>
         <nav className='navbar'>
           <div className='head'>
+            <Link to='/'>
             <h2 className='title'>SYR</h2>
+            </Link>
             <div className='head-right'>
               <select className='lang'>
                 <option value="en">English</option>

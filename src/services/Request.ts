@@ -1,5 +1,5 @@
 import axios from "axios"
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function post_request(url:string,body:any) {
     // eslint-disable-next-line no-useless-catch
     try{
@@ -9,5 +9,4 @@ export async function post_request(url:string,body:any) {
     catch(e){
         throw e;  
     }
-
 }
