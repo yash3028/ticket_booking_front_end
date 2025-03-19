@@ -1,9 +1,10 @@
 export interface busdetail{
-    operatorName: string;
-    busNumber: string;
-    route: string;
-    departureTime: string;
-    arrivalTime: string;
-    seatsAvailable: number;
-    fare: number;
+    operator_name: string;
+    bus_no: string;
+    bus_route: string;
+    departure_date: string;
+    departure_time: string;
+    arrival_time: string;
+    seats_available: string;
+    price: string;
 }

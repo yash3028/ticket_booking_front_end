@@ -6,14 +6,12 @@ import '../styles/usersign.css'
 function UserSign() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        
         const fullName = (e.target as HTMLFormElement).elements.namedItem("fullName") as HTMLInputElement;
         const mobileNo = (e.target as HTMLFormElement).elements.namedItem("mobileNo") as HTMLInputElement;
         const dob = (e.target as HTMLFormElement).elements.namedItem("dob") as HTMLInputElement;
         const password = (e.target as HTMLFormElement).elements.namedItem("password") as HTMLInputElement;
         const email = (e.target as HTMLFormElement).elements.namedItem("email") as HTMLInputElement;
         const user:User = {
-            
             full_name: fullName.value,
             email: email.value,
             mobile: mobileNo.value,
