@@ -10,28 +10,33 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Button } from "@mui/material";
+
 const CitiesList = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [date, setDate] = useState<Dayjs | null>(null);
   const [cities, setCities] = useState<city[]>([]);
 
   const handleSearch = () => {
-    console.log("Search button clicked");
-    // Add your search logic here
+    console.log("Search clicked for:", date);
   };
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/master_data/locations", {
+      .get("http://127.0.0.1:8081/locations", {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("authentication"),
         },
       })
       .then((response) => {
-        setCities(response.data.data);
+        if (response.data && Array.isArray(response.data)) {
+          setCities(response.data);
+        } else {
+          console.warn("Unexpected response format:", response.data);
+          setCities([]);
+        }
       })
       .catch((error) => {
-        console.error(error);
+        console.error("Error fetching locations:", error);
+        setCities([]);
       });
   }, []);
 
@@ -39,14 +44,17 @@ const CitiesList = () => {
     <Stack spacing={2} sx={{ width: 300 }}>
       <Autocomplete
         disablePortal
-        options={cities.map((city) => city)}
-        sx={{ width: 300 }}
+        options={cities}
+        getOptionLabel={(option) => option.city || ""}
+        isOptionEqualToValue={(option, value) =>
+          option.city === value.city && option.city_code === value.city_code
+        }
         renderInput={(params) => <TextField {...params} label="Place" />}
       />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
           label="Travel Date"
-          onChange={(newValue: Dayjs | null) => setDate(newValue)}
+          onChange={(newValue) => setDate(newValue)}
           slotProps={{ textField: { variant: "outlined", size: "medium" } }}
         />
       </LocalizationProvider>
