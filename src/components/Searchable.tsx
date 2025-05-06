@@ -49,7 +49,16 @@ const CitiesList = () => {
         isOptionEqualToValue={(option, value) =>
           option.city === value.city && option.city_code === value.city_code
         }
-        renderInput={(params) => <TextField {...params} label="Place" />}
+        renderInput={(params) => <TextField {...params} label="From" />}
+      />
+      <Autocomplete
+        disablePortal
+        options={cities}
+        getOptionLabel={(option) => option.city || ""}
+        isOptionEqualToValue={(option, value) =>
+          option.city === value.city && option.city_code === value.city_code
+        }
+        renderInput={(params) => <TextField {...params} label="To" />}
       />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
