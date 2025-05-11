@@ -31,10 +31,7 @@ function UserSign() {
       password: password.value,
       token: null,
     };
-    const response = await post_request(
-      "http://127.0.0.1:8081/api/save_user",
-      user
-    );
+    const response = await post_request("/api/save_user", user);
 
     console.log(response);
   };

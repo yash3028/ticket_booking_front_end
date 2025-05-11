@@ -1,6 +1,22 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import "../styles/navbar.css";
-function navbar() {
+
+function Navbar() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("authentication");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("authentication");
+    setIsLoggedIn(false);
+    navigate("/");
+  };
+
   return (
     <div>
       <nav className="navbar">
@@ -14,9 +30,16 @@ function navbar() {
               <option value="Te">Telugu</option>
               <option value="Hi">Hindi</option>
             </select>
-            <button className="login">
-              <Link to="/login-options">Login</Link>
-            </button>
+
+            {isLoggedIn ? (
+              <button className="login" onClick={handleLogout}>
+                Logout
+              </button>
+            ) : (
+              <button className="login">
+                <Link to="/login-options">Login</Link>
+              </button>
+            )}
           </div>
         </div>
       </nav>
@@ -24,4 +47,4 @@ function navbar() {
   );
 }
 
-export default navbar;
+export default Navbar;

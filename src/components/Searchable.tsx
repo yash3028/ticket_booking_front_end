@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import dayjs, { Dayjs } from "dayjs";
 import axios from "axios";
 import { city } from "../models/Locations.model";
@@ -10,18 +9,18 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const CitiesList = () => {
+  const navigate = useNavigate();
   const [date, setDate] = useState<Dayjs | null>(null);
   const [cities, setCities] = useState<city[]>([]);
-
-  const handleSearch = () => {
-    console.log("Search clicked for:", date);
-  };
+  const [fromCity, setFromCity] = useState<city | null>(null);
+  const [toCity, setToCity] = useState<city | null>(null);
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8081/locations", {
+      .get("/api/master/locations", {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("authentication"),
         },
@@ -40,11 +39,43 @@ const CitiesList = () => {
       });
   }, []);
 
+  const handleSearch = () => {
+    if (!fromCity || !toCity || !date) {
+      console.error("Please select From, To, and Date");
+      return;
+    }
+    const requestData = {
+      from: fromCity.city,
+      to: toCity.city,
+      departureDate: dayjs(date).format("YYYY-MM-DD"),
+    };
+    axios
+      .post("/api/master/search-buses", requestData, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("authentication"),
+        },
+      })
+      .then((response) => {
+        if (response.data && response.data.length > 0) {
+          alert("true");
+          navigate("/bus-result", {
+            state: { buses: response.data },
+          });
+        } else {
+          alert("false");
+        }
+      })
+      .catch((error) => {
+        console.error("Error searching for buses:", error);
+      });
+  };
   return (
     <Stack spacing={2} sx={{ width: 300 }}>
       <Autocomplete
         disablePortal
         options={cities}
+        value={fromCity}
+        onChange={(event, newValue) => setFromCity(newValue)}
         getOptionLabel={(option) => option.city || ""}
         isOptionEqualToValue={(option, value) =>
           option.city === value.city && option.city_code === value.city_code
@@ -54,6 +85,8 @@ const CitiesList = () => {
       <Autocomplete
         disablePortal
         options={cities}
+        value={toCity}
+        onChange={(event, newValue) => setToCity(newValue)}
         getOptionLabel={(option) => option.city || ""}
         isOptionEqualToValue={(option, value) =>
           option.city === value.city && option.city_code === value.city_code
@@ -63,6 +96,7 @@ const CitiesList = () => {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
           label="Travel Date"
+          value={date}
           onChange={(newValue) => setDate(newValue)}
           slotProps={{ textField: { variant: "outlined", size: "medium" } }}
         />

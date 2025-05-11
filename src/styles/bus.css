@@ -1,0 +1,49 @@
+.bus-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.bus-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.bus-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.bus-operator,
+.bus-no,
+.bus-time,
+.bus-price {
+  flex: 1 1 25%;
+  box-sizing: border-box;
+}
+
+.bus-operator {
+  text-align: left;
+}
+
+.bus-no {
+  text-align: left;
+}
+
+.bus-time {
+  text-align: center;
+}
+
+.bus-price {
+  text-align: right;
+  font-size: 1.1em;
+}
+

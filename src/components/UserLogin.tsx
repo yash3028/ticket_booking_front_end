@@ -25,10 +25,7 @@ export default function CustomSignInPage() {
     };
 
     try {
-      const response = await post_request(
-        "http://127.0.0.1:8081/api/login",
-        user
-      );
+      const response = await post_request("/api/user/login", user);
 
       if (response.status === 200) {
         const token = response.data.token;

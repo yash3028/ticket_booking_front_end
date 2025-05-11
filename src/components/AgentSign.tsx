@@ -36,10 +36,7 @@ function AgentSign() {
       token: null,
     };
 
-    const response = await post_request(
-      "http://localhost:3001/users/save-user",
-      agent
-    );
+    const response = await post_request("/api/user/save_user", agent);
     console.log(response);
   };
 
