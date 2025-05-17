@@ -2,8 +2,12 @@ import React from "react";
 import { User } from "../models/User.model";
 import { post_request } from "../services/Request";
 import "../styles/usersign.css";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function UserSign() {
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fullName = (e.target as HTMLFormElement).elements.namedItem(
@@ -25,15 +29,31 @@ function UserSign() {
       fullName: fullName.value,
       email: email.value,
       mobile: mobileNo.value,
-      userrole: "user",
+      userrole: "Customer",
       companyName: null,
       date_of_birth: new Date(dob.value),
       password: password.value,
       token: null,
     };
-    const response = await post_request("/api/save_user", user);
-
-    console.log(response);
+    try {
+      const response = await post_request("/api/user/save_user", user);
+      if (response.status === 200) {
+        alert("User registered successfully");
+        navigate("/login-options");
+      }
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 409) {
+          alert("Mobile number already exists");
+        } else if (error.response?.status === 401) {
+          alert("Invalid credentials");
+        } else {
+          alert("An error occurred, please try again later.");
+        }
+      } else {
+        alert("An error occurred, please try again later.");
+      }
+    }
   };
 
   return (
