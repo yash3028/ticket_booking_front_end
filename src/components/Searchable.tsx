@@ -26,7 +26,7 @@ const CitiesList = () => {
         },
       })
       .then((response) => {
-        if (response.data && Array.isArray(response.data)) {
+        if (response.data && Array.isArray(response.data)) {        
           setCities(response.data);
         } else {
           console.warn("Unexpected response format:", response.data);
@@ -44,7 +44,7 @@ const CitiesList = () => {
       console.error("Please select From, To, and Date");
       return;
     }
-    const requestData = {
+    const requestData = { 
       from: fromCity.city,
       to: toCity.city,
       departureDate: dayjs(date).format("YYYY-MM-DD"),

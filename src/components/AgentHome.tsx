@@ -1,7 +1,30 @@
+import { useEffect, useState } from "react";
 import { busdetail } from "../models/Agent.model";
-import { post_request } from "../services/Request";
+import { get_request, post_request } from "../services/Request";
 import "../styles/agenthome.css";
+import { LocalizationProvider, MobileTimePicker, TimeField } from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { TextField } from "@mui/material";
 function AgentHome() {
+  const [cities,setCities] = useState<{id:number;city_code:string}[]>([]);
+  const [departureTime, setDepartureTime] = useState<Dayjs | null>(dayjs());
+  const [arrivalTime, setArrivalTime] = useState(dayjs());
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await get_request("/api/master/locations");
+        setCities(
+          res.data.map((c: { id: number; city_code: string }) => ({
+            id: c.id,
+            city_code: c.city_code,
+          }))
+        );
+      } catch (err) {
+        console.error("Cannot load cities", err);
+      }
+    })();
+  }, []);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const operator_name = (e.target as HTMLFormElement).elements.namedItem(
@@ -31,6 +54,7 @@ function AgentHome() {
     const fare = (e.target as HTMLFormElement).elements.namedItem(
       "price"
     ) as HTMLInputElement;
+    console.log(departure)
     const details: busdetail = {
       operator_name: operator_name.value,
       bus_no: bus_no.value,
@@ -59,34 +83,67 @@ function AgentHome() {
         </label>
         <label>
           From:
-          <input type="text" className="input-field" name="from" required />
+          <select className="input-field" name="from" required>
+          <option value="">
+            Select From
+          </option>
+          {cities.map(c=>(
+            <option key={c.id} value={c.city_code}>{c.city_code}</option>
+          ))}
+          </select>
         </label>
         <label>
           To:
-          <input type="text" className="input-field" name="to" required />
+           <select className="input-field" name="to" required>
+          <option value="">
+            Select To
+          </option>
+          {cities.map(c=>(
+            <option key={c.id} value={c.city_code}>{c.city_code}</option>
+          ))}
+          </select>
         </label>
         <label>
           Departure Date:
           <input type="date" className="input-field" name="d_date" required />
         </label>
+
+       <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <label>
+        Departure Time:
+        <MobileTimePicker
+          label="Departure Time"
+          value={departureTime}
+          name="departure"
+          onChange={(newValue) => setDepartureTime(newValue)}
+          openTo="minutes" 
+          views={["hours", "minutes"]} 
+          ampm={false} 
+          slotProps={{
+            textField: { fullWidth: true },
+          }}
+        />
+      </label>
+    </LocalizationProvider>
+    
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
         <label>
-          Departure Time:
-          <input
-            type="string"
-            className="input-field"
-            name="departure"
-            required
-          />
-        </label>
-        <label>
-          Arrival Time:
-          <input
-            type="string"
-            className="input-field"
-            name="arrival"
-            required
-          />
-        </label>
+        Arrival Time:
+        <MobileTimePicker
+          label="Departure Time"
+          name="arrival"
+          value={arrivalTime}
+          onChange={(newValue) => setDepartureTime(newValue)}
+          openTo="minutes" 
+          views={["hours", "minutes"]} 
+          ampm={false} 
+          slotProps={{
+            textField: { fullWidth: true },
+          }}
+        />
+      </label>
+    </LocalizationProvider>
+
         <label>
           Seats Available:
           <input type="number" className="input-field" name="seats" required />
