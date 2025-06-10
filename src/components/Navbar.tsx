@@ -1,22 +1,15 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../styles/navbar.css";
+import Logout from "./Logout";
 
 function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("authentication");
+    const token = localStorage.getItem("Authorization");
     setIsLoggedIn(!!token);
   }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("authentication");
-    setIsLoggedIn(false);
-    navigate("/");
-  };
-
   return (
     <div>
       <nav className="navbar">
@@ -31,15 +24,13 @@ function Navbar() {
               <option value="Hi">Hindi</option>
             </select>
 
-            {isLoggedIn ? (
-              <button className="login" onClick={handleLogout}>
-                Logout
-              </button>
-            ) : (
-              <button className="login">
-                <Link to="/login-options">Login</Link>
-              </button>
-            )}
+             {isLoggedIn ? (
+          <Logout />
+        ) : (
+          <button className="login">
+            <Link to="/login-options">Login</Link>
+          </button>
+        )}
           </div>
         </div>
       </nav>

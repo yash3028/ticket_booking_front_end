@@ -22,7 +22,7 @@ const CitiesList = () => {
     axios
       .get("/api/master/locations", {
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("authentication"),
+          Authorization: "Bearer " + localStorage.getItem("Authorization"),
         },
       })
       .then((response) => {
@@ -52,7 +52,7 @@ const CitiesList = () => {
     axios
       .post("/api/master/search-buses", requestData, {
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("authentication"),
+          Authorization: "Bearer " + localStorage.getItem("Authorization"),
         },
       })
       .then((response) => {

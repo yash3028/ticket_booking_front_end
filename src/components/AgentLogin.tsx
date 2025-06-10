@@ -21,7 +21,7 @@ export default function AgentLogin() {
       mobile,
       password,
       token: null,
-      user_role: "agent", // Specific to Agent Login
+      user_role: "agent", 
     };
 
     try {
@@ -30,9 +30,9 @@ export default function AgentLogin() {
       if (response.status === 200) {
         const token = response.data.token;
         if (token) {
-          localStorage.setItem("authentication", token);
+          localStorage.setItem("Authorization", token);
           alert("Login successful");
-          navigate("/agenthome"); // Navigate to Agent Home page
+          navigate("/agenthome"); 
         } else {
           alert("Authentication failed, please try again.");
         }
@@ -41,7 +41,7 @@ export default function AgentLogin() {
     } catch (error: any) {
       if (error.response && error.response.status === 401) {
         alert("Invalid credentials, please sign up");
-        navigate("/agentsign"); // Navigate to Agent Sign-Up page
+        navigate("/agentsign"); 
       } else {
         alert("An error occurred, please try again later.");
       }
@@ -79,14 +79,18 @@ export default function AgentLogin() {
         required
         fullWidth
       />
-      <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-        Log In
-      </Button>
-      <Link to="/agentsign">
-        <Button variant="contained" color="primary" sx={{ mt: 2 }}>
-          Sign Up
-        </Button>
-      </Link>
+      
+       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2, width: "50%" }}>
+            Log In
+          </Button>
+      
+          <Link to="/agentsign" style={{ width: "50%", textDecoration: "none" }}>
+            <Button variant="contained" color="primary" sx={{ mt: 2, width: "100%" }}>
+              Sign Up
+            </Button>
+          </Link>
+        </Box>
     </Box>
   );
 }

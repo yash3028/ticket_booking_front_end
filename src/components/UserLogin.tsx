@@ -30,7 +30,7 @@ export default function CustomSignInPage() {
       if (response.status === 200) {
         const token = response.data.token;
         if (token) {
-          localStorage.setItem("authentication", token);
+          localStorage.setItem("Authorization", token);
           alert("Login successful");
           navigate("/");
         } else {
@@ -59,7 +59,7 @@ export default function CustomSignInPage() {
       }}
     >
       <Typography variant="h4" gutterBottom>
-        Sign In
+        Login In
       </Typography>
       <TextField
         label="Mobile"
@@ -78,14 +78,17 @@ export default function CustomSignInPage() {
         required
         fullWidth
       />
-      <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-        Log In
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+    <Button type="submit" variant="contained" color="primary" sx={{ mt: 2, width: "50%" }}>
+      Log In
+    </Button>
+
+    <Link to="/usersign" style={{ width: "50%", textDecoration: "none" }}>
+      <Button variant="contained" color="primary" sx={{ mt: 2, width: "100%" }}>
+        Sign Up
       </Button>
-      <Link to="/usersign">
-        <Button variant="contained" color="primary" sx={{ mt: 2 }}>
-          Sign In
-        </Button>
-      </Link>
+    </Link>
+  </Box>
     </Box>
   );
 }
