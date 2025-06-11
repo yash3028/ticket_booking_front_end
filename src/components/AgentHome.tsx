@@ -1,160 +1,184 @@
 import { useEffect, useState } from "react";
-import { busdetail } from "../models/Agent.model";
-import { get_request, post_request } from "../services/Request";
-import "../styles/agenthome.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import { get_request, post_request, put_request } from "../services/Request";
 import { LocalizationProvider, MobileTimePicker } from "@mui/x-date-pickers";
-import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs, { Dayjs } from "dayjs";
+import "../styles/agenthome.css";
+
 function AgentHome() {
-  const [cities,setCities] = useState<{id:number;city_code:string}[]>([]);
-  const [departureTime, setDepartureTime] = useState<Dayjs | null>(dayjs());
-  const [arrivalTime, setArrivalTime] = useState(dayjs());
+  const { state } = useLocation();
+  const navigate = useNavigate();
+
+  const editingId = state?.request?.id ?? null;
+
+  const [cities, setCities] = useState<{ id: number; city_code: string }[]>([]);
+  const [departureTime, setDepartureTime] = useState<Dayjs | null>(
+    state?.request ? dayjs(`2000-01-01T${state.request.departure_time}`) : dayjs()
+  );
+  const [arrivalTime, setArrivalTime] = useState<Dayjs | null>(
+    state?.request ? dayjs(`2000-01-01T${state.request.arrival_time}`) : dayjs()
+  );
+
   useEffect(() => {
     (async () => {
       try {
         const res = await get_request("/api/master/locations");
-        setCities(
-          res.data.map((c: { id: number; city_code: string }) => ({
-            id: c.id,
-            city_code: c.city_code,
-          }))
-        );
+        setCities(res.data);
       } catch (err) {
         console.error("Cannot load cities", err);
       }
     })();
   }, []);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const operator_name = (e.target as HTMLFormElement).elements.namedItem(
-      "name"
-    ) as HTMLInputElement;
-    const bus_no = (e.target as HTMLFormElement).elements.namedItem(
-      "busNo"
-    ) as HTMLInputElement;
-    const From = (e.target as HTMLFormElement).elements.namedItem(
-      "from"
-    ) as HTMLInputElement;
-    const To = (e.target as HTMLFormElement).elements.namedItem(
-      "to"
-    ) as HTMLInputElement;
-    const d_date = (e.target as HTMLFormElement).elements.namedItem(
-      "d_date"
-    ) as HTMLInputElement;
-    const departure = (e.target as HTMLFormElement).elements.namedItem(
-      "departure"
-    ) as HTMLInputElement;
-    const arrival = (e.target as HTMLFormElement).elements.namedItem(
-      "arrival"
-    ) as HTMLInputElement;
-    const seats = (e.target as HTMLFormElement).elements.namedItem(
-      "seats"
-    ) as HTMLInputElement;
-    const fare = (e.target as HTMLFormElement).elements.namedItem(
-      "price"
-    ) as HTMLInputElement;
-    console.log(departure)
-    const details: busdetail = {
-      operator_name: operator_name.value,
-      bus_no: bus_no.value,
-      fromLocation: From.value,
-      toLocation: To.value,
-      departureDate: d_date.value,
-      departure_time: departure.value,
-      arrival_time: arrival.value,
-      seats_available: seats.value,
-      price: fare.value,
+    const formData = new FormData(e.currentTarget);
+
+    const details = {
+      operator_name: formData.get("name") as string,
+      bus_no: formData.get("busNo") as string,
+      fromLocation: formData.get("from") as string,
+      toLocation: formData.get("to") as string,
+      departureDate: formData.get("d_date") as string,
+      departure_time: departureTime?.format("HH:mm") ?? "",
+      arrival_time: arrivalTime?.format("HH:mm") ?? "",
+      seats_available: formData.get("seats") as string,
+      price: Number(formData.get("price")),
     };
-    const response = await post_request("/api/agent/save_bus", details);
-    console.log(response);
+
+    try {
+      if (editingId) {
+        await put_request(`/api/agent/edit/request/${editingId}`, details);
+        alert("Bus details updated!");
+      } else {
+        await post_request("/api/agent/save_bus", details);
+        alert("Bus added successfully!");
+      }
+      navigate("/agenthome");
+    } catch (err) {
+      console.error("Error submitting form", err);
+      alert("Error submitting form");
+    }
   };
-  
+
   return (
     <div className="agent-home">
-      <h2>Agent Details</h2>
+      <h2>{editingId ? "Edit Bus Service" : "Add Bus Service"}</h2>
       <form onSubmit={handleSubmit}>
         <label>
           Operator Name:
-          <input type="text" className="input-field" name="name" required />
+          <input
+            type="text"
+            className="input-field"
+            name="name"
+            defaultValue={state?.request?.operator_name ?? ""}
+            required
+          />
         </label>
         <label>
           Bus No:
-          <input type="text" className="input-field" name="busNo" required />
+          <input
+            type="text"
+            className="input-field"
+            name="busNo"
+            defaultValue={state?.request?.bus_no ?? ""}
+            required
+          />
         </label>
         <label>
           From:
-          <select className="input-field" name="from" required>
-          <option value="">
-            Select From
-          </option>
-          {cities.map(c=>(
-            <option key={c.id} value={c.city_code}>{c.city_code}</option>
-          ))}
+          <select
+            className="input-field"
+            name="from"
+            defaultValue={state?.request?.fromLocation ?? ""}
+            required
+          >
+            <option value="">Select From</option>
+            {cities.map((c) => (
+              <option key={c.id} value={c.city_code}>
+                {c.city_code}
+              </option>
+            ))}
           </select>
         </label>
         <label>
           To:
-           <select className="input-field" name="to" required>
-          <option value="">
-            Select To
-          </option>
-          {cities.map(c=>(
-            <option key={c.id} value={c.city_code}>{c.city_code}</option>
-          ))}
+          <select
+            className="input-field"
+            name="to"
+            defaultValue={state?.request?.toLocation ?? ""}
+            required
+          >
+            <option value="">Select To</option>
+            {cities.map((c) => (
+              <option key={c.id} value={c.city_code}>
+                {c.city_code}
+              </option>
+            ))}
           </select>
         </label>
         <label>
           Departure Date:
-          <input type="date" className="input-field" name="d_date" required />
+          <input
+            type="date"
+            className="input-field"
+            name="d_date"
+            defaultValue={state?.request?.departureDate ?? ""}
+            required
+          />
         </label>
 
-       <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <label>
-        Departure Time:
-        <MobileTimePicker
-          label="Departure Time"
-          value={departureTime}
-          name="departure"
-          onChange={(newValue) => setDepartureTime(newValue)}
-          openTo="minutes" 
-          views={["hours", "minutes"]} 
-          ampm={false} 
-          slotProps={{
-            textField: { fullWidth: true },
-          }}
-        />
-      </label>
-    </LocalizationProvider>
-    
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <label>
-        Arrival Time:
-        <MobileTimePicker
-          label="Departure Time"
-          name="arrival"
-          value={arrivalTime}
-          onChange={(newValue) => setDepartureTime(newValue)}
-          openTo="minutes" 
-          views={["hours", "minutes"]} 
-          ampm={false} 
-          slotProps={{
-            textField: { fullWidth: true },
-          }}
-        />
-      </label>
-    </LocalizationProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <label>
+            Departure Time:
+            <MobileTimePicker
+              value={departureTime}
+              onChange={setDepartureTime}
+              ampm={false}
+              views={["hours", "minutes"]}
+              slotProps={{ textField: { fullWidth: true } }}
+            />
+          </label>
+        </LocalizationProvider>
+
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <label>
+            Arrival Time:
+            <MobileTimePicker
+              value={arrivalTime}
+              onChange={setArrivalTime}
+              ampm={false}
+              views={["hours", "minutes"]}
+              slotProps={{ textField: { fullWidth: true } }}
+            />
+          </label>
+        </LocalizationProvider>
 
         <label>
           Seats Available:
-          <input type="number" className="input-field" name="seats" required />
+          <input
+            type="number"
+            className="input-field"
+            name="seats"
+            defaultValue={state?.request?.seats_available ?? ""}
+            required
+          />
         </label>
         <label>
           Price:
-          <input type="number" className="input-field" name="price" required />
+          <input
+            type="number"
+            className="input-field"
+            name="price"
+            defaultValue={state?.request?.price ?? ""}
+            required
+          />
         </label>
-        <button type="submit">Sign Up</button>
+        <button type="submit">{editingId ? "Update" : "Submit"}</button>
       </form>
     </div>
   );
 }
+
 export default AgentHome;

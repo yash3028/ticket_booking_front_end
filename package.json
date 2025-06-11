@@ -13,7 +13,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.1",
-    "@mui/material": "^6.4.1",
+    "@mui/material": "^6.4.12",
     "@mui/toolpad-core": "^0.1.51",
     "@mui/x-date-pickers": "^8.0.0",
     "axios": "^1.7.7",

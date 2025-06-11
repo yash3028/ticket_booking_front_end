@@ -1,40 +1,43 @@
-import axios from "axios";
 import { Requests } from "../models/AgentRequest.model";
 import { useEffect, useRef, useState } from "react";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { delete_request, get_request } from "../services/Request";
 
 const ResquestsPage = () => {
   const [requests, setRequests] = useState<Requests[]>([]);
   const fetched = useRef(false);
+  const navigate = useNavigate()
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [toDeleteId, setToDeleteId] = useState<number | null>(null);
 
   useEffect(() => {
     if (fetched.current) return;
     fetched.current = true;
-    const controller = new AbortController();
 
     (async () => {
       try {
-        const token = localStorage.getItem("Authorization");
-        const res = await axios.get("/api/agent/get_request", {
-          headers: { Authorization: `Bearer ${token}` },
-          signal: controller.signal,
-        });
+         const res = await get_request("/api/agent/get_request");
         setRequests(res.data);
       } catch (err) {
         console.error(err);
       }
     })();
 
-    return () => controller.abort();
   }, []);
 
   const handleDelete = async (id: number) => {
     try {
-      const token = localStorage.getItem("Authorization");
-      await axios.delete(`/api/agent/delete_request/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await delete_request(`/api/agent/delete_request/${id}`);
 
-      setRequests(prev => prev.filter(req => req.id !== id));
+      setRequests((prev) => prev.filter((req) => req.id !== id));
     } catch (err) {
       console.error("Delete failed:", err);
     }
@@ -54,9 +57,54 @@ const ResquestsPage = () => {
             <p>Seats Available: {req.seats_available}</p>
             <p>Price: ₹{req.price}</p>
           </div>
-          <button onClick={() => handleDelete(req.id!)}>Delete</button>
+          <button
+            onClick={() => {
+              setToDeleteId(req.id);
+              setConfirmOpen(true);
+            }}
+          >
+            Delete
+          </button>
+          <Button
+            onClick={() =>
+              navigate("/agent/edit", { state: { request: req } })
+            }
+            sx={{ ml: 1 }}
+          >
+            Edit
+          </Button>
         </div>
       ))}
+
+      <Dialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        aria-labelledby="confirm-delete-title"
+        aria-describedby="confirm-delete-description"
+      >
+        <DialogTitle id="confirm-delete-title">Delete this request?</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="confirm-delete-description">
+            Are you sure you want to delete this request?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmOpen(false)}>Cancel</Button>
+          <Button
+            onClick={() => {
+              if (toDeleteId !== null) {
+                handleDelete(toDeleteId);
+              }
+              setConfirmOpen(false);
+              setToDeleteId(null);
+            }}
+            autoFocus
+          >
+            Delete
+          </Button>
+          
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
