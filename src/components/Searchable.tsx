@@ -45,8 +45,8 @@ const CitiesList = () => {
       return;
     }
     const requestData = { 
-      from: fromCity.city,
-      to: toCity.city,
+      from: fromCity.city_code,
+      to: toCity.city_code,
       departureDate: dayjs(date).format("YYYY-MM-DD"),
     };
     axios

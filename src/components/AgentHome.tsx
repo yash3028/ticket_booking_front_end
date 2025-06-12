@@ -5,6 +5,7 @@ import { LocalizationProvider, MobileTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import "../styles/agenthome.css";
+import { Snackbar, Alert } from "@mui/material";
 
 function AgentHome() {
   const { state } = useLocation();
@@ -20,6 +21,20 @@ function AgentHome() {
     state?.request ? dayjs(`2000-01-01T${state.request.arrival_time}`) : dayjs()
   );
 
+  const [snack, setSnack] = useState({
+    open: false,
+    message: "",
+    severity: "success" as "success" | "error" | "warning" | "info",
+  });
+
+  const showSnackbar = (message: string, severity: "success" | "error" | "info" | "warning") => {
+    setSnack({ open: true, message, severity });
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnack((prev) => ({ ...prev, open: false }));
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -27,6 +42,7 @@ function AgentHome() {
         setCities(res.data);
       } catch (err) {
         console.error("Cannot load cities", err);
+        showSnackbar("Failed to load cities", "error");
       }
     })();
   }, []);
@@ -50,15 +66,15 @@ function AgentHome() {
     try {
       if (editingId) {
         await put_request(`/api/agent/edit/request/${editingId}`, details);
-        alert("Bus details updated!");
+        showSnackbar("Bus details updated!", "success");
       } else {
         await post_request("/api/agent/save_bus", details);
-        alert("Bus added successfully!");
+        showSnackbar("Bus added successfully!", "success");
       }
-      navigate("/agenthome");
+      setTimeout(() => navigate("/agenthome"), 1500);
     } catch (err) {
       console.error("Error submitting form", err);
-      alert("Error submitting form");
+      showSnackbar("Error submitting form", "error");
     }
   };
 
@@ -177,6 +193,17 @@ function AgentHome() {
         </label>
         <button type="submit">{editingId ? "Update" : "Submit"}</button>
       </form>
+
+      <Snackbar
+        open={snack.open}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snack.severity} sx={{ width: "100%" }}>
+          {snack.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

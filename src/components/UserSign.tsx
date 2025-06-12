@@ -1,12 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import { User } from "../models/User.model";
 import { post_request } from "../services/Request";
 import "../styles/usersign.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Snackbar, Alert } from "@mui/material";
 
 function UserSign() {
   const navigate = useNavigate();
+
+  const [snack, setSnack] = useState({
+    open: false,
+    message: "",
+    severity: "success" as "success" | "error" | "info" | "warning",
+  });
+
+  const showSnackbar = (
+    message: string,
+    severity: "success" | "error" | "info" | "warning"
+  ) => {
+    setSnack({ open: true, message, severity });
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnack((prev) => ({ ...prev, open: false }));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,6 +43,7 @@ function UserSign() {
     const email = (e.target as HTMLFormElement).elements.namedItem(
       "email"
     ) as HTMLInputElement;
+
     const user: User = {
       fullName: fullName.value,
       email: email.value,
@@ -35,23 +54,24 @@ function UserSign() {
       password: password.value,
       token: null,
     };
+
     try {
       const response = await post_request("/api/user/save_user", user);
       if (response.status === 200) {
-        alert("User registered successfully");
-        navigate("/login-options");
+        showSnackbar("User registered successfully", "success");
+        setTimeout(() => navigate("/login-options"), 1500);
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 409) {
-          alert("Mobile number already exists");
+          showSnackbar("Mobile number already exists", "error");
         } else if (error.response?.status === 401) {
-          alert("Invalid credentials");
+          showSnackbar("Invalid credentials", "error");
         } else {
-          alert("An error occurred, please try again later.");
+          showSnackbar("An error occurred, please try again later.", "error");
         }
       } else {
-        alert("An error occurred, please try again later.");
+        showSnackbar("An error occurred, please try again later.", "error");
       }
     }
   };
@@ -89,6 +109,21 @@ function UserSign() {
         </label>
         <button type="submit">Sign Up</button>
       </form>
+
+      <Snackbar
+        open={snack.open}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snack.severity}
+          sx={{ width: "100%" }}
+        >
+          {snack.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

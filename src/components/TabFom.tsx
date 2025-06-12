@@ -17,7 +17,6 @@ export default function TabForm() {
       <Tabs
         value={tabIndex}
         onChange={(_, newValue) => setTabIndex(newValue)}
-        centered
         variant="scrollable"
         scrollButtons="auto"
       >
