@@ -1,0 +1,43 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+label {
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+input, .MuiButtonBase-root, .MuiTextField-root {
+  font-size: 14px;
+  height: 40px;
+}
+
+.MuiButtonBase-root {
+  text-transform: none;
+}
+
+.search {
+  height: 40px;
+  padding: 0 20px;
+}
+
+form > .MuiButtonBase-root {
+  align-self: flex-end;
+}

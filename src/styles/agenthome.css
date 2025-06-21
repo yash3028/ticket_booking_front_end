@@ -1,0 +1,75 @@
+.agent-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+    min-height: 150vh;
+    width: 70vh;
+    font-family: Arial, sans-serif;
+}
+
+.agent-home h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.agent-home form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.agent-home label {
+    display: flex;
+    flex-direction: column;
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.agent-home input {
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0 10px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.agent-home input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+
+
+.agent-home input[type="number"]::-webkit-inner-spin-button,
+.agent-home input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.agent-home button {
+    width: 100%;
+    height: 45px;
+    margin-top: 20px;
+    font-size: 1rem;
+    color: #fff;
+    background: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.agent-home button:hover {
+    background: #0056b3;
+}
