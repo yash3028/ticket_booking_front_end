@@ -53,6 +53,8 @@ export default function CustomSignInPage() {
         if (token) {
           localStorage.setItem("Authorization", token);
           showSnackbar("Login successful", "success");
+          window.dispatchEvent(new Event("authChanged")); // 👈 trigger global event
+
           setTimeout(() => navigate("/"), 1500);
         } else {
           showSnackbar("Authentication failed, please try again.", "error");

@@ -1,14 +1,30 @@
+import { Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Logout(){
-    const navigate = useNavigate();
-    const handleLogout = ()=>{
-        localStorage.removeItem("Authorization");
-        navigate("/");
+interface LogoutProps {
+  isLoggedIn: boolean;
+  setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
+}
+export default function Logout({ isLoggedIn, setIsLoggedIn }: LogoutProps) {
+     const navigate = useNavigate();
+
+  const handleLogout = () => {
+    if (isLoggedIn) {
+      localStorage.removeItem("Authorization");
+      setIsLoggedIn(false);
+      window.dispatchEvent(new Event("authChanged"));
+      navigate("/");
+    } else {
+      navigate("/login-options");
     }
+  };
+
     return(
+        
         <button onClick={handleLogout} className="login">
-      Logout
+        {isLoggedIn ?
+        "Logout": "Login"
+        }
     </button>
     )
 }
