@@ -81,117 +81,136 @@ function AgentHome() {
   return (
     <div className="agent-home">
       <h2>{editingId ? "Edit Bus Service" : "Add Bus Service"}</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Operator Name:
-          <input
-            type="text"
-            className="input-field"
-            name="name"
-            defaultValue={state?.request?.operator_name ?? ""}
-            required
-          />
-        </label>
-        <label>
-          Bus No:
-          <input
-            type="text"
-            className="input-field"
-            name="busNo"
-            defaultValue={state?.request?.bus_no ?? ""}
-            required
-          />
-        </label>
-        <label>
-          From:
-          <select
-            className="input-field"
-            name="from"
-            defaultValue={state?.request?.fromLocation ?? ""}
-            required
-          >
-            <option value="">Select From</option>
-            {cities.map((c) => (
-              <option key={c.id} value={c.city_code}>
-                {c.city_code}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          To:
-          <select
-            className="input-field"
-            name="to"
-            defaultValue={state?.request?.toLocation ?? ""}
-            required
-          >
-            <option value="">Select To</option>
-            {cities.map((c) => (
-              <option key={c.id} value={c.city_code}>
-                {c.city_code}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Departure Date:
-          <input
-            type="date"
-            className="input-field"
-            name="d_date"
-            defaultValue={state?.request?.departureDate ?? ""}
-            required
-          />
-        </label>
 
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <form onSubmit={handleSubmit} className="agent-form-grid">
+        <div className="form-row">
           <label>
-            Departure Time:
-            <MobileTimePicker
-              value={departureTime}
-              onChange={setDepartureTime}
-              ampm={false}
-              views={["hours", "minutes"]}
-              slotProps={{ textField: { fullWidth: true } }}
+            Operator Name:
+            <input
+              type="text"
+              className="input-field"
+              name="name"
+              defaultValue={state?.request?.operator_name ?? ""}
+              required
             />
           </label>
-        </LocalizationProvider>
 
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
           <label>
-            Arrival Time:
-            <MobileTimePicker
-              value={arrivalTime}
-              onChange={setArrivalTime}
-              ampm={false}
-              views={["hours", "minutes"]}
-              slotProps={{ textField: { fullWidth: true } }}
+            Bus No:
+            <input
+              type="text"
+              className="input-field"
+              name="busNo"
+              defaultValue={state?.request?.bus_no ?? ""}
+              required
             />
           </label>
-        </LocalizationProvider>
+        </div>
 
-        <label>
-          Seats Available:
-          <input
-            type="number"
-            className="input-field"
-            name="seats"
-            defaultValue={state?.request?.seats_available ?? ""}
-            required
-          />
-        </label>
-        <label>
-          Price:
-          <input
-            type="number"
-            className="input-field"
-            name="price"
-            defaultValue={state?.request?.price ?? ""}
-            required
-          />
-        </label>
-        <button type="submit">{editingId ? "Update" : "Submit"}</button>
+        <div className="form-row">
+          <label>
+            From:
+            <select
+              className="input-field"
+              name="from"
+              defaultValue={state?.request?.fromLocation ?? ""}
+              required
+            >
+              <option value="">Select From</option>
+              {cities.map((c) => (
+                <option key={c.id} value={c.city_code}>
+                  {c.city_code}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label>
+            To:
+            <select
+              className="input-field"
+              name="to"
+              defaultValue={state?.request?.toLocation ?? ""}
+              required
+            >
+              <option value="">Select To</option>
+              {cities.map((c) => (
+                <option key={c.id} value={c.city_code}>
+                  {c.city_code}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        <div className="form-row">
+          <label>
+            Departure Date:
+            <input
+              type="date"
+              className="input-field"
+              name="d_date"
+              defaultValue={state?.request?.departureDate ?? ""}
+              required
+            />
+          </label>
+
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <label>
+              Departure Time:
+              <MobileTimePicker
+                value={departureTime}
+                onChange={setDepartureTime}
+                ampm={false}
+                views={["hours", "minutes"]}
+                slotProps={{ textField: { fullWidth: true } }}
+              />
+            </label>
+          </LocalizationProvider>
+        </div>
+
+        <div className="form-row">
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <label>
+              Arrival Time:
+              <MobileTimePicker
+                value={arrivalTime}
+                onChange={setArrivalTime}
+                ampm={false}
+                views={["hours", "minutes"]}
+                slotProps={{ textField: { fullWidth: true } }}
+              />
+            </label>
+          </LocalizationProvider>
+
+          <label>
+            Seats Available:
+            <input
+              type="number"
+              className="input-field"
+              name="seats"
+              defaultValue={state?.request?.seats_available ?? ""}
+              required
+            />
+          </label>
+        </div>
+
+        <div className="form-row">
+          <label>
+            Price:
+            <input
+              type="number"
+              className="input-field"
+              name="price"
+              defaultValue={state?.request?.price ?? ""}
+              required
+            />
+          </label>
+        </div>
+
+        <div className="form-row">
+          <button type="submit">{editingId ? "Update" : "Submit"}</button>
+        </div>
       </form>
 
       <Snackbar

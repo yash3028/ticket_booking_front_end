@@ -4,11 +4,11 @@ import axios from "axios";
 import { city } from "../models/Locations.model";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import { Stack } from "@mui/material";
+import { Stack, Button, Snackbar } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const CitiesList = () => {
@@ -18,6 +18,20 @@ const CitiesList = () => {
   const [fromCity, setFromCity] = useState<city | null>(null);
   const [toCity, setToCity] = useState<city | null>(null);
 
+  const [snackOpen, setSnackOpen] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
+  const [snackSeverity, setSnackSeverity] = useState<"success" | "error" | "info" | "warning">("success");
+
+  const showSnackbar = (message: string, severity: "success" | "error" | "info" | "warning") => {
+    setSnackMessage(message);
+    setSnackSeverity(severity);
+    setSnackOpen(true);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackOpen(false);
+  };
+
   useEffect(() => {
     axios
       .get("/api/master/locations", {
@@ -26,29 +40,29 @@ const CitiesList = () => {
         },
       })
       .then((response) => {
-        if (response.data && Array.isArray(response.data)) {        
+        if (response.data && Array.isArray(response.data)) {
           setCities(response.data);
         } else {
-          console.warn("Unexpected response format:", response.data);
           setCities([]);
         }
       })
-      .catch((error) => {
-        console.error("Error fetching locations:", error);
+      .catch(() => {
         setCities([]);
       });
   }, []);
 
   const handleSearch = () => {
     if (!fromCity || !toCity || !date) {
-      console.error("Please select From, To, and Date");
+      showSnackbar("Please select From, To, and Date", "warning");
       return;
     }
-    const requestData = { 
+
+    const requestData = {
       from: fromCity.city_code,
       to: toCity.city_code,
       departureDate: dayjs(date).format("YYYY-MM-DD"),
     };
+
     axios
       .post("/api/master/search-buses", requestData, {
         headers: {
@@ -57,18 +71,19 @@ const CitiesList = () => {
       })
       .then((response) => {
         if (response.data && response.data.length > 0) {
-          alert("true");
+          showSnackbar("Buses found!", "success");
           navigate("/bus-result", {
             state: { buses: response.data },
           });
         } else {
-          alert("false");
+          showSnackbar("No buses available for the selected route/date.", "info");
         }
       })
-      .catch((error) => {
-        console.error("Error searching for buses:", error);
+      .catch(() => {
+        showSnackbar("An error occurred while searching.", "error");
       });
   };
+
   return (
     <Stack spacing={2} sx={{ width: 300 }}>
       <Autocomplete
@@ -104,6 +119,17 @@ const CitiesList = () => {
       <Button variant="contained" onClick={handleSearch}>
         Search
       </Button>
+
+      <Snackbar
+        open={snackOpen}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <MuiAlert onClose={handleCloseSnackbar} severity={snackSeverity} elevation={6} variant="filled">
+          {snackMessage}
+        </MuiAlert>
+      </Snackbar>
     </Stack>
   );
 };

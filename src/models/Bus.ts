@@ -5,6 +5,7 @@ export interface Bus {
   fromLocation: string;
   toLocation: string;
   departure_time: string;
+  seats_available: number;
   arrival_time: string;
   price: number;
 }

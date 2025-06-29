@@ -1,85 +1,126 @@
-import React from "react";
+import React, { useState } from "react";
 import { post_request } from "../services/Request";
 import { User } from "../models/User.model";
 import "../styles/agentsign.css";
+import { Snackbar, Alert } from "@mui/material";
 
 function AgentSign() {
+  const [countryCode, setCountryCode] = useState("+91");
+
+  const [snack, setSnack] = useState({
+    open: false,
+    message: "",
+    severity: "success" as "success" | "error" | "info" | "warning",
+  });
+  
+
+  const showSnackbar = (message: string, severity: "success" | "error" | "info" | "warning") => {
+    setSnack({ open: true, message, severity });
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnack((prev) => ({ ...prev, open: false }));
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const fullName = (e.target as HTMLFormElement).elements.namedItem(
-      "fullName"
-    ) as HTMLInputElement;
-    const mobileNo = (e.target as HTMLFormElement).elements.namedItem(
-      "mobileNo"
-    ) as HTMLInputElement;
-    const dob = (e.target as HTMLFormElement).elements.namedItem(
-      "dob"
-    ) as HTMLInputElement;
-    const password = (e.target as HTMLFormElement).elements.namedItem(
-      "password"
-    ) as HTMLInputElement;
-    const travelName = (e.target as HTMLFormElement).elements.namedItem(
-      "travelName"
-    ) as HTMLInputElement;
-    const email = (e.target as HTMLFormElement).elements.namedItem(
-      "email"
-    ) as HTMLInputElement;
+    const form = e.currentTarget;
     const agent: User = {
-      fullName: fullName.value,
-      email: email.value,
-      mobile: mobileNo.value,
+      fullName: (form.elements.namedItem("fullName") as HTMLInputElement).value,
+      mobile: (form.elements.namedItem("mobileNo") as HTMLInputElement).value,
+      email: (form.elements.namedItem("email") as HTMLInputElement).value,
+      date_of_birth: new Date((form.elements.namedItem("dob") as HTMLInputElement).value),
+      password: (form.elements.namedItem("password") as HTMLInputElement).value,
+      companyName: (form.elements.namedItem("travelName") as HTMLInputElement).value,
       userrole: "agent",
-      companyName: travelName.value,
-      date_of_birth: new Date(dob.value),
-      password: password.value,
       token: null,
+      country_code: countryCode
     };
 
-    const response = await post_request("/api/user/save_user", agent);
-    console.log(response);
+    try {
+      await post_request("/api/user/save_user", agent);
+      showSnackbar("Registration successful!", "success");
+      form.reset(); 
+    } catch (err) {
+      console.error("Registration failed", err);
+      showSnackbar("Registration failed. Try again.", "error");
+    }
   };
 
   return (
     <div className="user-sign">
-      <h2>Agent Sign In</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Full Name:
-          <input type="text" className="input-field" name="fullName" required />
-        </label>
-        <label>
-          Mobile No:
-          <input type="text" className="input-field" name="mobileNo" required />
-        </label>
-        <label>
-          Email:
-          <input type="text" className="input-field" name="email" required />
-        </label>
-        <label>
-          Date of Birth:
-          <input type="date" className="input-field" name="dob" required />
-        </label>
-        <label>
-          Password:
-          <input
-            type="password"
-            className="input-field"
-            name="password"
-            required
-          />
-        </label>
-        <label>
-          Travel Name:
-          <input
-            type="text"
-            className="input-field"
-            name="travelName"
-            required
-          />
-        </label>
-        <button type="submit">Sign Up</button>
+      <h2>Agent Sign Up</h2>
+      <form onSubmit={handleSubmit} className="agent-form-grid">
+        <div className="form-row">
+          <label>
+            Full Name:
+            <input type="text" className="input-field" name="fullName" required />
+          </label>
+          <label>
+            Mobile No:
+            <div className="phone-input-group">
+              <select
+                value={countryCode}
+                onChange={(e) => setCountryCode(e.target.value)}
+                required
+                name="countryCode"
+              >
+                <option value="+91">+91</option>
+                <option value="+1">+1</option>
+                <option value="+44">+44</option>
+                <option value="+61">+61</option>
+                <option value="+81">+81</option>
+              </select>
+              <input
+                type="text"
+                name="mobileNo"
+                required
+                placeholder="Enter mobile number"
+                pattern="[0-9]{6,15}"
+                title="Enter a valid 10 digit mobile number without country code"
+              />
+            </div>
+          </label>
+        </div>
+
+        <div className="form-row">
+          <label>
+            Email:
+            <input type="email" className="input-field" name="email" required />
+          </label>
+          <label>
+            Date of Birth:
+            <input type="date" className="input-field" name="dob" required />
+          </label>
+        </div>
+
+        <div className="form-row">
+          <label>
+            Password:
+            <input type="password" className="input-field" name="password" required />
+          </label>
+          <label>
+            Travel Name:
+            <input type="text" className="input-field" name="travelName" required />
+          </label>
+        </div>
+
+        <div className="form-row">
+          <button type="submit">Sign Up</button>
+        </div>
       </form>
+
+      <Snackbar
+        open={snack.open}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snack.severity} sx={{ width: "100%" }}>
+          {snack.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

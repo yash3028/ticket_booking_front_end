@@ -41,3 +41,17 @@ input, .MuiButtonBase-root, .MuiTextField-root {
 form > .MuiButtonBase-root {
   align-self: flex-end;
 }
+
+.card-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.card-container > div {
+  transition: transform 0.2s ease-in-out;
+}
+
+.card-container > div:hover {
+  transform: scale(1.01);
+}

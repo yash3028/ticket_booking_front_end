@@ -7,4 +7,5 @@ export interface User {
   date_of_birth: Date;
   password: string;
   token: string | null;
+  country_code: string,
 }

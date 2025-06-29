@@ -1,0 +1,61 @@
+.user-sign {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.agent-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.form-row label {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-field {
+  padding: 8px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+button[type="submit"] {
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+
+.phone-input-group {
+  display: flex;
+  width: 100%;
+}
+
+.phone-input-group select {
+  border: 1px solid #ccc;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  padding: 10px;
+  background-color: white;
+  font-size: 1rem;
+}
+
+.phone-input-group input {
+  border: 1px solid #ccc;
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+  padding: 10px;
+  flex: 1;
+  font-size: 1rem;
+}
+

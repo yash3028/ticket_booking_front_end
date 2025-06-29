@@ -53,7 +53,7 @@ export default function CustomSignInPage() {
         if (token) {
           localStorage.setItem("Authorization", token);
           showSnackbar("Login successful", "success");
-          window.dispatchEvent(new Event("authChanged")); // 👈 trigger global event
+          window.dispatchEvent(new Event("authChanged")); 
 
           setTimeout(() => navigate("/"), 1500);
         } else {
