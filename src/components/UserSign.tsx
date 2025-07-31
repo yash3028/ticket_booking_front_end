@@ -5,6 +5,7 @@ import "../styles/usersign.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Snackbar, Alert } from "@mui/material";
+import * as countryCodes from "country-codes-list";
 
 function UserSign() {
   const navigate = useNavigate();
@@ -28,6 +29,10 @@ function UserSign() {
     setSnack((prev) => ({ ...prev, open: false }));
   };
 
+  const myCountryCodesObject = countryCodes.customList(
+      "countryCode",
+      "+{countryCallingCode}"
+      );
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -91,11 +96,11 @@ function UserSign() {
                 required
                 name="countryCode"
               >
-                <option value="+91">+91</option>
-                <option value="+1">+1</option>
-                <option value="+44">+44</option>
-                <option value="+61">+61</option>
-                <option value="+81">+81</option>
+                  {Object.values(myCountryCodesObject).map((code) => (
+                  <option key={code} value={code}>
+                    {code}
+                  </option>
+                ))}
               </select>
               <input
                 type="text"

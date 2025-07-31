@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
+
 function MyBookings() {
   const [tickets, setTickets] = useState<booking[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,6 +30,7 @@ function MyBookings() {
   const handleCloseSnackbar = () => {
     setSnackOpen(false);
   };
+  
 
   useEffect(() => {
     const fetchTickets = async () => {

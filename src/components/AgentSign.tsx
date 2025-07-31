@@ -3,6 +3,7 @@ import { post_request } from "../services/Request";
 import { User } from "../models/User.model";
 import "../styles/agentsign.css";
 import { Snackbar, Alert } from "@mui/material";
+import * as countryCodes from "country-codes-list";
 
 function AgentSign() {
   const [countryCode, setCountryCode] = useState("+91");
@@ -21,6 +22,11 @@ function AgentSign() {
   const handleCloseSnackbar = () => {
     setSnack((prev) => ({ ...prev, open: false }));
   };
+
+  const myCountryCodesObject = countryCodes.customList(
+    "countryCode",
+    "+{countryCallingCode}"
+    );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,11 +72,11 @@ function AgentSign() {
                 required
                 name="countryCode"
               >
-                <option value="+91">+91</option>
-                <option value="+1">+1</option>
-                <option value="+44">+44</option>
-                <option value="+61">+61</option>
-                <option value="+81">+81</option>
+                {Object.values(myCountryCodesObject).map((code) => (
+                  <option key={code} value={code}>
+                    {code}
+                  </option>
+                ))}
               </select>
               <input
                 type="text"

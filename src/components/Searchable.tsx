@@ -4,7 +4,7 @@ import axios from "axios";
 import { city } from "../models/Locations.model";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import { Stack, Button, Snackbar } from "@mui/material";
+import { Stack, Button, Snackbar, Box } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -17,6 +17,10 @@ const CitiesList = () => {
   const [cities, setCities] = useState<city[]>([]);
   const [fromCity, setFromCity] = useState<city | null>(null);
   const [toCity, setToCity] = useState<city | null>(null);
+
+  const isLoggedIn = () => {
+    return !!localStorage.getItem("Authorization");
+  };
 
   const [snackOpen, setSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
@@ -52,6 +56,10 @@ const CitiesList = () => {
   }, []);
 
   const handleSearch = () => {
+     if (!isLoggedIn()) {
+    showSnackbar("Please login to search buses", "warning");
+    return;
+  }
     if (!fromCity || !toCity || !date) {
       showSnackbar("Please select From, To, and Date", "warning");
       return;
@@ -84,54 +92,132 @@ const CitiesList = () => {
       });
   };
 
+ 
   return (
-    <Stack spacing={2} sx={{ width: 300 }}>
-      <Autocomplete
-        disablePortal
-        options={cities}
-        value={fromCity}
-        onChange={(event, newValue) => setFromCity(newValue)}
-        getOptionLabel={(option) => option.city || ""}
-        isOptionEqualToValue={(option, value) =>
-          option.city === value.city && option.city_code === value.city_code
-        }
-        renderInput={(params) => <TextField {...params} label="From" />}
-      />
-      <Autocomplete
-        disablePortal
-        options={cities}
-        value={toCity}
-        onChange={(event, newValue) => setToCity(newValue)}
-        getOptionLabel={(option) => option.city || ""}
-        isOptionEqualToValue={(option, value) =>
-          option.city === value.city && option.city_code === value.city_code
-        }
-        renderInput={(params) => <TextField {...params} label="To" />}
-      />
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          label="Travel Date"
-          value={date}
-          onChange={(newValue) => setDate(newValue)}
-          slotProps={{ textField: { variant: "outlined", size: "medium" } }}
-        />
-      </LocalizationProvider>
-      <Button variant="contained" onClick={handleSearch}>
-        Search
-      </Button>
-
-      <Snackbar
-        open={snackOpen}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+  <>
+    {isLoggedIn() ? (
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 2,
+          bgcolor: "#fff",
+          borderRadius: 4,
+          boxShadow: 3,
+          p: 3,
+          mt: 5,
+          justifyContent: "center",
+          alignItems: "center",
+          maxWidth: 1000,
+          mx: "auto",
+        }}
       >
-        <MuiAlert onClose={handleCloseSnackbar} severity={snackSeverity} elevation={6} variant="filled">
-          {snackMessage}
-        </MuiAlert>
-      </Snackbar>
-    </Stack>
-  );
-};
+        <Autocomplete
+          disablePortal
+          options={cities}
+          value={fromCity}
+          onChange={(event, newValue) => setFromCity(newValue)}
+          getOptionLabel={(option) => option.city || ""}
+          isOptionEqualToValue={(option, value) =>
+            option.city === value.city && option.city_code === value.city_code
+          }
+          renderInput={(params) => <TextField {...params} label="From" />}
+          sx={{ minWidth: 200 }}
+        />
+
+        <Autocomplete
+          disablePortal
+          options={cities}
+          value={toCity}
+          onChange={(event, newValue) => setToCity(newValue)}
+          getOptionLabel={(option) => option.city || ""}
+          isOptionEqualToValue={(option, value) =>
+            option.city === value.city && option.city_code === value.city_code
+          }
+          renderInput={(params) => <TextField {...params} label="To" />}
+          sx={{ minWidth: 200 }}
+        />
+
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Travel Date"
+            value={date}
+            onChange={(newValue) => setDate(newValue)}
+            slotProps={{
+              textField: { variant: "outlined", size: "medium" },
+            }}
+          />
+        </LocalizationProvider>
+
+        <Button
+          variant="contained"
+          onClick={handleSearch}
+          sx={{ height: 56, px: 4, bgcolor: "#d32f2f" }}
+        >
+          Search Buses
+        </Button>
+      </Box>
+    ) : (
+      <Stack spacing={2} sx={{ width: 300, mx: "auto", mt: 4 }}>
+        <Autocomplete
+          disablePortal
+          options={cities}
+          value={fromCity}
+          onChange={(event, newValue) => setFromCity(newValue)}
+          getOptionLabel={(option) => option.city || ""}
+          isOptionEqualToValue={(option, value) =>
+            option.city === value.city && option.city_code === value.city_code
+          }
+          renderInput={(params) => <TextField {...params} label="From" />}
+        />
+
+        <Autocomplete
+          disablePortal
+          options={cities}
+          value={toCity}
+          onChange={(event, newValue) => setToCity(newValue)}
+          getOptionLabel={(option) => option.city || ""}
+          isOptionEqualToValue={(option, value) =>
+            option.city === value.city && option.city_code === value.city_code
+          }
+          renderInput={(params) => <TextField {...params} label="To" />}
+        />
+
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Travel Date"
+            value={date}
+            onChange={(newValue) => setDate(newValue)}
+            slotProps={{
+              textField: { variant: "outlined", size: "medium" },
+            }}
+          />
+        </LocalizationProvider>
+
+        <Button variant="contained" onClick={handleSearch}>
+          Search
+        </Button>
+      </Stack>
+    )}
+
+    <Snackbar
+      open={snackOpen}
+      autoHideDuration={3000}
+      onClose={handleCloseSnackbar}
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+    >
+      <MuiAlert
+        onClose={handleCloseSnackbar}
+        severity={snackSeverity}
+        elevation={6}
+        variant="filled"
+      >
+        {snackMessage}
+      </MuiAlert>
+    </Snackbar>
+  </>
+);
+
+}
 
 export default CitiesList;
