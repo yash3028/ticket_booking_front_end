@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { User } from "../models/User.model";
 import { post_request } from "../services/Request";
 import "../styles/usersign.css";
 import { useNavigate } from "react-router-dom";
@@ -37,22 +36,17 @@ function UserSign() {
     e.preventDefault();
 
     const form = e.currentTarget;
-    const user: User = {
-      fullName: (form.elements.namedItem("fullName") as HTMLInputElement).value,
-      mobile:   (form.elements.namedItem("mobileNo") as HTMLInputElement).value,
-      email: (form.elements.namedItem("email") as HTMLInputElement).value,
-      date_of_birth: new Date(
-        (form.elements.namedItem("dob") as HTMLInputElement).value
-      ),
-      password: (form.elements.namedItem("password") as HTMLInputElement).value,
-      userrole: "Customer",
-      companyName: null,
-      token: null,
-      country_code: countryCode,
-    };
-
+    const formData = new FormData();
+    formData.append("full_name", (form.elements.namedItem("fullName") as HTMLInputElement).value);
+    formData.append("mobile", (form.elements.namedItem("mobileNo") as HTMLInputElement).value);
+    formData.append("email", (form.elements.namedItem("email") as HTMLInputElement).value);
+    formData.append("date_of_birth", (form.elements.namedItem("dob") as HTMLInputElement).value);
+    formData.append("password", (form.elements.namedItem("password") as HTMLInputElement).value);
+    formData.append("company_name", " ");
+    formData.append("userrole", "Customer");
+    formData.append("country_code", countryCode);
     try {
-      const response = await post_request("/api/user/save_user", user);
+      const response = await post_request("/api/user/save_user", formData,true);
       if (response.status === 200) {
         showSnackbar("User registered successfully", "success");
         setTimeout(() => navigate("/login-options"), 1500);

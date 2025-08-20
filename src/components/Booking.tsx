@@ -1,9 +1,7 @@
-import "../styles/booking.css";
+import { Box, Button, Typography, Snackbar, Alert } from "@mui/material";
 import CitiesList from "./Searchable";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
 
 function Booking() {
   const navigate = useNavigate();
@@ -27,12 +25,43 @@ function Booking() {
   };
 
   return (
-    <div className="body">
-      <div>
-        <button onClick={goto}>My booking</button>
-      </div>
-      <h2>Book Your Ticket</h2>
-      <CitiesList />
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        px: { xs: 2, sm: 4, md: 6 }, 
+        py: { xs: 3, sm: 4 },
+      }}
+    >
+      <Box sx={{ alignSelf: "center", mb: 0.8 }}>
+        <Button
+          variant="contained"
+          onClick={goto}
+          sx={{
+            fontSize: { xs: "0.75rem", sm: "0.9rem" },
+            px: { xs: 2.5, sm: 3 },
+            py: { xs: 1, sm: 1.2 },
+          }}
+        >
+          My Booking
+        </Button>
+      </Box>
+
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{
+          fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
+          textAlign: "start",
+        }}
+      >
+        Book Your Ticket
+      </Typography>
+
+      <Box sx={{ width: "100%", maxWidth: { xs: "100%", sm: "600px" }, mt: 0 }}>
+        <CitiesList />
+      </Box>
 
       <Snackbar
         open={snackOpen}
@@ -40,11 +69,17 @@ function Booking() {
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <MuiAlert onClose={handleCloseSnackbar} severity={snackSeverity} elevation={6} variant="filled">
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackSeverity}
+          elevation={6}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
           {snackMessage}
-        </MuiAlert>
+        </Alert>
       </Snackbar>
-    </div>
+    </Box>
   );
 }
 

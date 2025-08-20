@@ -195,7 +195,7 @@ const CitiesList = () => {
         </LocalizationProvider>
 
         <Button variant="contained" onClick={handleSearch}>
-          Search
+          Search 
         </Button>
       </Stack>
     )}

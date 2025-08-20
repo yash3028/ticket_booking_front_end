@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { post_request } from "../services/Request";
-import { User } from "../models/User.model";
 import "../styles/agentsign.css";
 import { Snackbar, Alert } from "@mui/material";
 import * as countryCodes from "country-codes-list";
@@ -30,29 +29,32 @@ function AgentSign() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+      const form = e.currentTarget;
 
-    const form = e.currentTarget;
-    const agent: User = {
-      fullName: (form.elements.namedItem("fullName") as HTMLInputElement).value,
-      mobile: (form.elements.namedItem("mobileNo") as HTMLInputElement).value,
-      email: (form.elements.namedItem("email") as HTMLInputElement).value,
-      date_of_birth: new Date((form.elements.namedItem("dob") as HTMLInputElement).value),
-      password: (form.elements.namedItem("password") as HTMLInputElement).value,
-      companyName: (form.elements.namedItem("travelName") as HTMLInputElement).value,
-      userrole: "agent",
-      token: null,
-      country_code: countryCode
-    };
+
+  const formData = new FormData();
+  formData.append("full_name", (form.elements.namedItem("fullName") as HTMLInputElement).value);
+  formData.append("mobile", (form.elements.namedItem("mobileNo") as HTMLInputElement).value);
+  formData.append("email", (form.elements.namedItem("email") as HTMLInputElement).value);
+  formData.append("date_of_birth", (form.elements.namedItem("dob") as HTMLInputElement).value);
+  formData.append("password", (form.elements.namedItem("password") as HTMLInputElement).value);
+  formData.append("company_name", (form.elements.namedItem("travelName") as HTMLInputElement).value);
+  formData.append("userrole", "agent");
+  formData.append("country_code", countryCode);
+  const fileInput = form.elements.namedItem("logo") as HTMLInputElement;
+  if (fileInput.files && fileInput.files.length > 0) {
+    formData.append("logo", fileInput.files[0]);
+  }
 
     try {
-      await post_request("/api/user/save_user", agent);
+      await post_request("/api/user/save_user", formData,true);
       showSnackbar("Registration successful!", "success");
       form.reset(); 
     } catch (err) {
       console.error("Registration failed", err);
       showSnackbar("Registration failed. Try again.", "error");
     }
-  };
+  };  
 
   return (
     <div className="user-sign">
@@ -109,6 +111,18 @@ function AgentSign() {
           <label>
             Travel Name:
             <input type="text" className="input-field" name="travelName" required />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Bus Image: 
+            <input
+              type="file"
+              name="logo"
+              accept="image/*"
+              required
+            />
           </label>
         </div>
 

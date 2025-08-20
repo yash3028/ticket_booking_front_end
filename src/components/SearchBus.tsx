@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Bus } from "../models/Bus";
 import "../styles/bus.css";
 import { post_request } from "../services/Request";
@@ -7,10 +7,9 @@ import { Snackbar, Alert } from "@mui/material";
 
 const ResultsPage = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const buses: Bus[] = location.state?.buses || [];
+
   const [seatCount, setSeatCount] = useState<{ [busId: number]: number }>({});
-  
   const [snack, setSnack] = useState({
     open: false,
     message: "",
@@ -62,6 +61,17 @@ const ResultsPage = () => {
       {buses.map((bus, index) => (
         <div className="bus-card" key={index}>
           <div className="bus-info">
+            <div className="agent-logo">
+              <img
+                src={`http://localhost:8080/api/agent/${bus.aid}/logo`}
+                alt="Agent Logo"
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  borderRadius: "50%",
+                }}
+              />
+            </div>
             <div className="bus-operator">
               <p>Operator: {bus.operator_name}</p>
             </div>
@@ -79,9 +89,7 @@ const ResultsPage = () => {
                 Time: {bus.departure_time} → {bus.arrival_time}
               </p>
             </div>
-            <div className="seats">
-              Available Seats: {bus.seats_available}
-            </div>
+            <div className="seats">Available Seats: {bus.seats_available}</div>
             <div className="book-seats">
               Book Seats:{" "}
               <input
@@ -89,9 +97,7 @@ const ResultsPage = () => {
                 min="1"
                 max={bus.seats_available}
                 value={seatCount[bus.id] || 1}
-                onChange={(e) =>
-                  handleseats(bus.id, parseInt(e.target.value))
-                }
+                onChange={(e) => handleseats(bus.id, parseInt(e.target.value))}
               />
             </div>
             <div className="bus-price">
@@ -110,7 +116,11 @@ const ResultsPage = () => {
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snack.severity} sx={{ width: "100%" }}>
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snack.severity}
+          sx={{ width: "100%" }}
+        >
           {snack.message}
         </Alert>
       </Snackbar>

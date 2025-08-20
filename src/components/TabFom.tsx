@@ -13,12 +13,15 @@ export default function TabForm() {
   ];
 
   return (
-    <Box>
+    <Box
+        sx={{mt: 7}}
+        >
       <Tabs
         value={tabIndex}
         onChange={(_, newValue) => setTabIndex(newValue)}
         variant="scrollable"
         scrollButtons="auto"
+        
       >
         {tabItems.map((tab, index) => (
           <Tab key={index} label={tab.label} />
