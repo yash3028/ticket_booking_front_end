@@ -65,11 +65,11 @@ export default function AgentLogin() {
       component="form"
       onSubmit={handleSubmit}
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        mt: 5,
-      }}
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          mt: 4,
+        }}
     >
       <Typography variant="h4" gutterBottom>
         Agent Login
@@ -92,7 +92,14 @@ export default function AgentLogin() {
         fullWidth
       />
 
-      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+      <Box 
+        sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
+          }}
+      >
         <Button type="submit" variant="contained" color="primary" sx={{ mt: 2, width: "50%" }}>
           Log In
         </Button>

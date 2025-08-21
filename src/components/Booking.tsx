@@ -41,7 +41,7 @@ function Booking() {
           sx={{
             fontSize: { xs: "0.75rem", sm: "0.9rem" },
             px: { xs: 2.5, sm: 3 },
-            py: { xs: 1, sm: 1.2 },
+            py: { xs: 1.5, sm: 1.2 },
           }}
         >
           My Booking
