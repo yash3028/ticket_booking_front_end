@@ -34,7 +34,7 @@ function Booking() {
         py: { xs: 3, sm: 4 },
       }}
     >
-      <Box sx={{ alignSelf: "center", mb: 0.8 }}>
+      <Box sx={{ alignSelf: "center",mt:6 }}>
         <Button
           variant="contained"
           onClick={goto}
@@ -54,12 +54,13 @@ function Booking() {
         sx={{
           fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
           textAlign: "start",
+          mt:1.5
         }}
       >
         Book Your Ticket
       </Typography>
 
-      <Box sx={{ width: "100%", maxWidth: { xs: "100%", sm: "600px" }, mt: 0 }}>
+      <Box sx={{ width: "100%", maxWidth: { xs: "100%", sm: "600px" }, mt: -4 }}>
         <CitiesList />
       </Box>
 

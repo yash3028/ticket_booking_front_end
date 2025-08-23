@@ -3,7 +3,7 @@ import { Bus } from "../models/Bus";
 import "../styles/bus.css";
 import { post_request } from "../services/Request";
 import { useState } from "react";
-import { Snackbar, Alert } from "@mui/material";
+import { Snackbar, Alert, Button, Grid,Typography, Paper, Box, TextField, Avatar } from "@mui/material";
 
 const ResultsPage = () => {
   const location = useLocation();
@@ -55,59 +55,76 @@ const ResultsPage = () => {
     }
   };
 
-  return (
-    <div className="results-container">
-      <h3 className="results-heading">Available Buses</h3>
+return (
+    <Box className="results-container" sx={{ mt: 3 }}>
+      <Typography variant="h6" sx={{ mb: 2, textAlign: "center" }}>
+        Available Buses
+      </Typography>
+
       {buses.map((bus, index) => (
-        <div className="bus-card" key={index}>
-          <div className="bus-info">
-            <div className="agent-logo">
-              <img
+        <Paper
+          key={index}
+          elevation={3}
+          sx={{
+            p: 2,
+            mb: 2,
+            borderRadius: 2,
+          }}
+        >
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} sm={2} sx={{ textAlign: "center" }}>
+              <Avatar
                 src={`http://localhost:8080/api/agent/${bus.aid}/logo`}
                 alt="Agent Logo"
-                style={{
-                  width: "100px",
-                  height: "100px",
-                  borderRadius: "50%",
-                }}
+                sx={{ width: 250, height: 100, margin: "auto" }}
               />
-            </div>
-            <div className="bus-operator">
-              <p>Operator: {bus.operator_name}</p>
-            </div>
-            <div className="bus-no">
-              <p>Bus No: {bus.bus_no}</p>
-            </div>
-            <div>
-              <p>From: {bus.fromLocation}</p>
-            </div>
-            <div>
-              <p>To: {bus.toLocation}</p>
-            </div>
-            <div className="bus-time">
-              <p>
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
+              <Typography variant="subtitle1" >
+                Operator Name: {bus.operator_name}
+              </Typography>
+              <Typography variant="body2">Bus No: {bus.bus_no}</Typography>
+              <Typography variant="body2">
+                {bus.fromLocation} → {bus.toLocation}
+              </Typography>
+              <Typography variant="body2">
                 Time: {bus.departure_time} → {bus.arrival_time}
-              </p>
-            </div>
-            <div className="seats">Available Seats: {bus.seats_available}</div>
-            <div className="book-seats">
-              Book Seats:{" "}
-              <input
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12} sm={3}>
+              <Typography variant="body2">
+                Seats Available: {bus.seats_available}
+              </Typography>
+              <TextField
+                label="Book Seats"
                 type="number"
-                min="1"
-                max={bus.seats_available}
+                size="small"
+                inputProps={{ min: 1, max: bus.seats_available }}
                 value={seatCount[bus.id] || 1}
-                onChange={(e) => handleseats(bus.id, parseInt(e.target.value))}
+                onChange={(e) =>
+                  handleseats(bus.id, parseInt(e.target.value, 10))
+                }
+                sx={{ mt: 1, width: "100px" }}
               />
-            </div>
-            <div className="bus-price">
-              <p>Price: ₹{bus.price}</p>
-            </div>
-            <div>
-              <button onClick={() => book(bus.id)}>Book</button>
-            </div>
-          </div>
-        </div>
+              <Typography variant="body2" sx={{ mt: 1, fontWeight: "bold" }}>
+                Price: ₹{bus.price}
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12} sm={3} sx={{ textAlign: "center" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => book(bus.id)}
+                fullWidth
+              >
+                Book
+              </Button>
+            </Grid>
+          </Grid>
+        </Paper>
       ))}
 
       <Snackbar
@@ -124,7 +141,7 @@ const ResultsPage = () => {
           {snack.message}
         </Alert>
       </Snackbar>
-    </div>
+    </Box>
   );
 };
 
