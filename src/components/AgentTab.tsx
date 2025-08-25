@@ -15,7 +15,7 @@ export default function AgnetTab(){
            component: <ResquestsPage />,
        }]
         return (
-           <Box sx={{ mt: 8 }}>
+           <Box sx={{ mt: -3 }}>
              <Tabs
                value={tabIndex}
                onChange={(_, newValue) => setTabIndex(newValue)}

@@ -57,7 +57,7 @@ const ResultsPage = () => {
 
 return (
     <Box className="results-container" sx={{ mt: 3 }}>
-      <Typography variant="h6" sx={{ mb: 2, textAlign: "center" }}>
+      <Typography variant="h6" sx={{ mt:6, textAlign: "center" }}>
         Available Buses
       </Typography>
 
@@ -69,14 +69,23 @@ return (
             p: 2,
             mb: 2,
             borderRadius: 2,
+            width: "100%",     
+            maxWidth: "100%",  
+            mx: "auto",
           }}
         >
           <Grid container spacing={2} alignItems="center">
             <Grid item xs={12} sm={2} sx={{ textAlign: "center" }}>
               <Avatar
                 src={`http://localhost:8080/api/agent/${bus.aid}/logo`}
-                alt="Agent Logo"
-                sx={{ width: 250, height: 100, margin: "auto" }}
+                variant="square"
+                sx={{
+                  width: { xs: 100, sm: 120, md: 150 }, 
+                  height: { xs: 60, sm: 80, md: 100 },  
+                  margin: "auto",
+                  borderRadius: 2, 
+                  objectFit: "contain",
+                }}
               />
             </Grid>
 

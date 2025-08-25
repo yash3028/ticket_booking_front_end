@@ -5,7 +5,7 @@ import { LocalizationProvider, MobileTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import "../styles/agenthome.css";
-import { Snackbar, Alert } from "@mui/material";
+import { Snackbar, Alert, Box, Grid, Button, MenuItem, TextField, Typography } from "@mui/material";
 
 function AgentHome() {
   const { state } = useLocation();
@@ -79,139 +79,137 @@ function AgentHome() {
   };
 
   return (
-    <div className="agent-home">
-      <h2>{editingId ? "Edit Bus Service" : "Add Bus Service"}</h2>
+     <Box>
+      <Typography variant="h5" gutterBottom>
+        {editingId ? "Edit Bus Service" : "Add Bus Service"}
+      </Typography>
 
-      <form onSubmit={handleSubmit} className="agent-form-grid">
-        <div className="form-row">
-          <label>
-            Operator Name:
-            <input
-              type="text"
-              className="input-field"
+      <Box component="form" onSubmit={handleSubmit}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6} lg={4}>
+            <TextField
+              label="Operator Name"
               name="name"
+              fullWidth
+              required
               defaultValue={state?.request?.operator_name ?? ""}
-              required
             />
-          </label>
-
-          <label>
-            Bus No:
-            <input
-              type="text"
-              className="input-field"
+          </Grid>
+          <Grid item xs={12} sm={6} lg={4}>
+            <TextField
+              label="Bus No"
               name="busNo"
+              fullWidth
+              required
               defaultValue={state?.request?.bus_no ?? ""}
-              required
             />
-          </label>
-        </div>
+          </Grid>
 
-        <div className="form-row">
-          <label>
-            From:
-            <select
-              className="input-field"
+          <Grid item xs={12} sm={6} lg={4}>
+            <TextField
+              select
+              label="From"
               name="from"
+              fullWidth
+              required
               defaultValue={state?.request?.fromLocation ?? ""}
-              required
             >
-              <option value="">Select From</option>
+              <MenuItem value="">Select From</MenuItem>
               {cities.map((c) => (
-                <option key={c.id} value={c.city_code}>
+                <MenuItem key={c.id} value={c.city_code}>
                   {c.city_code}
-                </option>
+                </MenuItem>
               ))}
-            </select>
-          </label>
-
-          <label>
-            To:
-            <select
-              className="input-field"
+            </TextField>
+          </Grid>
+          <Grid item xs={12} sm={6} lg={4}>
+            <TextField
+              select
+              label="To"
               name="to"
+              fullWidth
+              required
               defaultValue={state?.request?.toLocation ?? ""}
-              required
             >
-              <option value="">Select To</option>
+              <MenuItem value="">Select To</MenuItem>
               {cities.map((c) => (
-                <option key={c.id} value={c.city_code}>
+                <MenuItem key={c.id} value={c.city_code}>
                   {c.city_code}
-                </option>
+                </MenuItem>
               ))}
-            </select>
-          </label>
-        </div>
+            </TextField>
+          </Grid>
 
-        <div className="form-row">
-          <label>
-            Departure Date:
-            <input
+          <Grid item xs={12} sm={6} lg={4}>
+            <TextField
+              label="Departure Date"
               type="date"
-              className="input-field"
               name="d_date"
-              defaultValue={state?.request?.departureDate ?? ""}
+              fullWidth
               required
+              InputLabelProps={{ shrink: true }}
+              defaultValue={state?.request?.departureDate ?? ""}
             />
-          </label>
-
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <label>
-              Departure Time:
+          </Grid>
+          <Grid item xs={12} sm={6} lg={4}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
               <MobileTimePicker
+                label="Departure Time"
                 value={departureTime}
                 onChange={setDepartureTime}
                 ampm={false}
-                views={["hours", "minutes"]}
                 slotProps={{ textField: { fullWidth: true } }}
               />
-            </label>
-          </LocalizationProvider>
-        </div>
+            </LocalizationProvider>
+          </Grid>
 
-        <div className="form-row">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <label>
-              Arrival Time:
+          <Grid item xs={12} sm={6} lg={4}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
               <MobileTimePicker
+                label="Arrival Time"
                 value={arrivalTime}
                 onChange={setArrivalTime}
                 ampm={false}
-                views={["hours", "minutes"]}
                 slotProps={{ textField: { fullWidth: true } }}
               />
-            </label>
-          </LocalizationProvider>
+            </LocalizationProvider>
+          </Grid>
 
-          <label>
-            Seats Available:
-            <input
+          <Grid item xs={12} sm={6} lg={4}>
+            <TextField
+              label="Seats Available"
               type="number"
-              className="input-field"
               name="seats"
+              fullWidth
+              required
               defaultValue={state?.request?.seats_available ?? ""}
-              required
             />
-          </label>
-        </div>
+          </Grid>
 
-        <div className="form-row">
-          <label>
-            Price:
-            <input
+          <Grid item xs={12} sm={6} lg={4}>
+            <TextField
+              label="Price"
               type="number"
-              className="input-field"
               name="price"
-              defaultValue={state?.request?.price ?? ""}
+              fullWidth
               required
+              defaultValue={state?.request?.price ?? ""}
             />
-          </label>
-        </div>
+          </Grid>
 
-        <div className="form-row">
-          <button type="submit">{editingId ? "Update" : "Submit"}</button>
-        </div>
-      </form>
+          <Grid item xs={12} display="flex" justifyContent= "center">
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ px: { xs: 4, sm: 6, md: 8 } }} 
+
+            >
+              {editingId ? "Update" : "Submit"}
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
 
       <Snackbar
         open={snack.open}
@@ -219,11 +217,15 @@ function AgentHome() {
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snack.severity} sx={{ width: "100%" }}>
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snack.severity}
+          sx={{ width: "100%" }}
+        >
           {snack.message}
         </Alert>
       </Snackbar>
-    </div>
+    </Box>
   );
 }
 
